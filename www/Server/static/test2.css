@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css?family=Mina');
+@import url('https://fonts.googleapis.com/css?family=Francois+One');
+@font-face {
+font-family: mrrobot;
+src: url(fonts/mr-robot/robot.ttf);
+}
+
+html,body {
+ height:100%;
+ margin:0;
+ overflow: scroll;
+ scroll-behavior: smooth;
+}
+
+
+.cont-1 {
+
+  background: url("https://orig00.deviantart.net/de22/f/2010/310/6/d/autumn_wallpaper_by_bankaii94-d32bdbe.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  text-align: center;
+
+	height: 100%;
+
+  width: 100%;
+  overflow: hidden;
+}
+
+.cont-2 {
+	background: #212121;
+	background-repeat: no-repeat;
+	background-size: cover;
+	text-align: center;
+	height: 100%;
+
+  width: 100%;
+  overflow: hidden;
+}
+
+.deco-box {
+  border: 2px solid white;
+  padding: 5%;
+  font-family: mrrobot, 'Mina', sans-serif;
+  color: white;
+}
+
+.float {
+  position: fixed;
+  z-index: 100;
+  background: black;
+}
+.deco {
+  border: 2px solid;
+  border-radius: 2%;
+  font-family: 'Francois One', sans-serif;
+}
+
+.material-icons.md-48.md-light { font-size: 80px; color: rgba(255, 255, 255, 1);}
+
+.banner {
+  margin: 0 auto;
+  height: 590px;
+}
+
+.sub-text {
+  color: white;
+}
+
+.fullscreen-bg__video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -100;
+}
+
+.cont-3 {
+    overflow: hidden;
+    text-align: center;
+  	height: 100%;
+
+    width: 100%;
+}

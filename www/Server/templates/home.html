@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" type="text/css" href="../static/home.css">
+    <link rel="stylesheet" type="text/css" href="../static/ionicons-2.0.1/css/ionicons.css"
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <ul class="navbar-nav">
+    <li class="nav-item active">
+      <a class="nav-link" href="#">Automated Attendance System</a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <a href="/logout" class="btn btn-outline-danger">Logout</a>
+    </li>
+  </ul>
+</nav>
+<div class="container">
+    <div class="jumbotron" style="margin-top:5%">
+      <h3 class="display-4">Welcome To Automatic Attendance System Web Interface</h1>
+        <br>
+      <p class="lead"> You're Logged In as : <span style="color:green">{{username}}<span> </p>
+    </div>
+    <div class="jumbotron">
+      <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Available Tables</th>
+        <th>Contents</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in tables %}
+        <tr>
+          <td>{{i[0]}}</td>
+          {% if description|length %}
+            <td>
+              <table class="table">
+                <thead>
+                  {% for i in description %}
+                    <th> {{i[0]}} </th>
+                  {% endfor %}
+                </thead>
+                <tbody>
+                  {% for j in selection[i[0]] %}
+                    <tr class="row-{{count}}">
+                      <td> {{j[0]}} </td>
+                      <td> {{j[1]}} </td>
+                      <td> {{j[2]}}     <i class="ion-minus-circled" style="font-size:20px;margin-left:5%;" onclick="remove(this)"></i></td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+              </table>
+            {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+    <div>
+      <input type="hidden" value="{{user}}" disabled>
+      <input type="number" class="form-control" placeholder="Time in minutes" style="margin-bottom:2%;width:20%;">
+      {% if blocked == True %}
+        <button  class="btn btn-outline-primary btn-lg" onclick="app(this)" disabled>Start Application</button>
+      {% else %}
+        <button  class="btn btn-outline-primary btn-lg" onclick="app(this)">Start Application</button>
+      {% endif %}
+    </div>
+    </div>
+</div>
+</div>
+<script src="../static/scripts/asyn.js"></script>
+</body>
+</html>
