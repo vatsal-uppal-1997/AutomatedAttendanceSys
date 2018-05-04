@@ -10,13 +10,13 @@ app.debug = True
 
 working = []
 
+
 def hashNcheck(username, password):
     db = pymysql.connect("localhost", "cereal", "toor", "website")
     cursor = db.cursor()
     genQuery = "select password from login where username='{}'".format(username)
     cursor.execute(genQuery)
-    temp=cursor.fetchone()
-    #print(temp)
+    temp = cursor.fetchone()
     if temp is not None and check_password_hash(temp[0], password):
         db.close()
         return True
@@ -25,17 +25,40 @@ def hashNcheck(username, password):
         return False
 
 
+def add_to_db(to_add):
+    try:
+        db = pymysql.connect("localhost", "cereal", "toor", "website")
+        cursor = db.cursor()
+        sql = '''select * from students where id="{}"'''.format(to_add["id"])
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        data = tuple(j for i in data for j in i)
+        sql = '''insert into `{}` values ("{}","{}","{}","{}")'''.\
+        format(to_add["table"], data[0], data[1], data[2], data[3])
+        cursor.execute(sql)
+        db.commit()
+        db.close()
+    except:
+        pass
+
+
 def remove_from_db(to_remove):
     db = pymysql.connect("localhost", "cereal", "toor", "website")
     cursor = db.cursor()
-    temp = '''select mac from {} where id = {}'''.format("students", to_remove['id'])
-    cursor.execute(temp)
-    mac = cursor.fetchone()
-    mac = mac[0]
-    temp = '''delete from {} where mac = "{}"'''.format(to_remove['table'], mac)
-    cursor.execute(temp)
-    db.commit()
-    db.close()
+    try:
+        print(to_remove)
+        if len(to_remove) is not 1:
+            temp = '''delete from `{}` where id = "{}"'''.format(to_remove['table'], to_remove['id'])
+            cursor.execute(temp)
+        else:
+            print("executing")
+            temp = '''drop table `{}`'''.format(to_remove['table'])
+            cursor.execute(temp)
+        print("removed !")
+        db.commit()
+        db.close()
+    except:
+        pass
 
 
 def start_app(target, ip):
@@ -48,7 +71,6 @@ def before_request():
     g.user = None
     if 'username' in session:
         g.user = session['username']
-
 
 
 @app.route('/')
@@ -73,7 +95,7 @@ def home():
         # selection = cursor.fetchall()
         selection = {}
         for i in tables:
-            sql = '''select id,name,section from students natural join {}'''.format(i[0])
+            sql = '''select id,name,section from students natural join `{}`'''.format(i[0])
             cursor.execute(sql)
             selection[i[0]] = cursor.fetchall()
         print(selection)
@@ -82,7 +104,7 @@ def home():
         else:
             blocked = False
         return render_template("home.html", username=g.user, tables=tables, description=description,
-                               selection=selection, user=user[0], blocked = blocked)
+                               selection=selection, user=user[0], blocked=blocked)
     return redirect(url_for('index'))
 
 
@@ -101,7 +123,7 @@ def login():
 @app.route('/remove', methods=["POST"])
 def remove():
     result = request.form
-    print(result)
+    print(len(result))
     remove_from_db(result)
     return "200"
 
@@ -114,8 +136,7 @@ def start():
         ip = request.remote_addr
         print("IP IS -----> "+ip)
         print(result)
-        create_instance = mkdb3.module(ip, result['teacher'], result['timeout'])
-        print(working)
+        create_instance = mkdb3.module(ip, result['teacher'], result['section'], result['timeout'])
         if ip not in working:
             make_worker = Thread(target=start_app, args=[create_instance, ip])
             working.append(ip)
@@ -132,6 +153,14 @@ def start():
         return "{}".format(blocked)
 
 
+@app.route('/add', methods=["POST"])
+def add():
+    if request.method == "POST":
+        to_add = request.form
+        add_to_db(to_add)
+        return redirect(url_for("home"))
+
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
@@ -139,4 +168,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="192.168.43.58", port=5000)
+    app.run(host="192.168.100.2", port=5000)

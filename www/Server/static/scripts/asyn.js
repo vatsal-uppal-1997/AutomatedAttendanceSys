@@ -1,4 +1,30 @@
 var persist, persist2;
+
+function aJax(destination,POSTDATA) {
+  ajax = new XMLHttpRequest();
+  ajax.open('POST',destination);
+  ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  ajax.send(POSTDATA);
+  ajax.onreadystatechange = function() {
+    if (ajax.readyState === XMLHttpRequest.DONE) {
+      if (ajax.status === 200) {
+        console.log("req 200 !");
+      } else {
+        console.log("req err !");
+      }
+    }
+  }
+}
+
+function removeTable(element) {
+
+  var tableName = element.parentNode.textContent;
+  if (confirm("Are you sure you want to delete table "+tableName+" ?")){
+    var POSTDATA = "table="+encodeURIComponent(tableName);
+    aJax('/remove',POSTDATA);
+  }
+  location.reload();
+}
 function remove(element) {
   // GET TD
   var owner = element.parentNode;
@@ -25,21 +51,9 @@ function remove(element) {
   var POSTDATA = "id="+encodeURIComponent(children[0])+"&name="+encodeURIComponent(children[1])+"&section="+encodeURIComponent(children[2])+"&table="+encodeURIComponent(get_tbl);
   console.log(POSTDATA)
   //AJAX
+  aJax('/remove',POSTDATA);
 
-  ajax = new XMLHttpRequest();
-  ajax.open('POST', '/remove');
-  ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  ajax.send(POSTDATA);
-  ajax,onreadystatechange = function() {
-    if (ajax.readyState === XMLHttpRequest.DONE) {
-      if (ajax.status === 200) {
-        console.log("req 200 !");
-      } else {
-        console.log("req err !");
-      }
-    }
-  }
-  grandParent.parentNode.removeChild(grandParent);
+  grandParent.removeChild(ownersParent);
 }
 
 function app(element) {
@@ -49,7 +63,8 @@ function app(element) {
   var data = new Array()
   data[0] = children[0].value;
   data[1] = children[1].value;
-  var POSTDATA  = "teacher="+encodeURIComponent(data[0])+"&timeout="+encodeURIComponent(data[1]);
+  data[2] = children[2].value;
+  var POSTDATA  = "teacher="+encodeURIComponent(data[0])+"&section="+encodeURIComponent(data[1])+"&timeout="+encodeURIComponent(data[2]);
   // ajax
   console.log(POSTDATA)
   ajax = new XMLHttpRequest();

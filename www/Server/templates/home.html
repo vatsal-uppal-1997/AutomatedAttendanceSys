@@ -11,6 +11,16 @@
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous">
     </script>
+    <style>
+
+      #trash {
+        display: none;
+      }
+      #trash:hover {
+        color: red;
+      }
+
+    </style>
     <link rel="stylesheet" type="text/css" href="../static/home.css">
     <link rel="stylesheet" type="text/css" href="../static/ionicons-2.0.1/css/ionicons.css"
   </head>
@@ -42,27 +52,36 @@
       </tr>
     </thead>
     <tbody>
-      {% for i in tables %}
+      {% for i in tables|reverse %}
         <tr>
-          <td>{{i[0]}}</td>
+          <td onclick="unhide(this)"><i class="icon ion-ios-trash" style="font-size:20px;margin-right:5%;" id="trash" onclick="removeTable(this)"></i>{{i[0]}}</td>
           {% if description|length %}
             <td>
-              <table class="table">
-                <thead>
-                  {% for i in description %}
-                    <th> {{i[0]}} </th>
-                  {% endfor %}
-                </thead>
-                <tbody>
-                  {% for j in selection[i[0]] %}
-                    <tr class="row-{{count}}">
-                      <td> {{j[0]}} </td>
-                      <td> {{j[1]}} </td>
-                      <td> {{j[2]}}     <i class="ion-minus-circled" style="font-size:20px;margin-left:5%;" onclick="remove(this)"></i></td>
-                    </tr>
-                </tbody>
-                {% endfor %}
-              </table>
+              <form action="/add" method="post">
+                <table class="table">
+                  <thead onclick="showform(this)">
+                    {% for i in description %}
+                      <th> {{i[0]}} </th>
+                      {% endfor %}
+                    </thead>
+                    <tbody>
+                      {% for j in selection[i[0]] %}
+                      <tr class="row-{{count}}">
+                        <td> {{j[0]}} </td>
+                        <td> {{j[1]}} </td>
+                        <td> {{j[2]}}     <i class="ion-minus-circled" style="font-size:20px;margin-left:5%;" onclick="remove(this)"></i></td>
+                      </tr>
+                      {% endfor %}
+                      <tr style="display:none">
+                        <td  style="display: none"><input type="text" name="table" class="form-control" value="{{i[0]}}"></td>
+                        <td><input type="number" name="id" class="form-control" required></td>
+                        <td><input type="text" name="name" class="form-control" required></td>
+                        <td><input type="section" name="section" class="form-control" required></td>
+                        <td><input type="submit" class="form-control" value="Add"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
             {% endif %}
         </tr>
       {% endfor %}
@@ -70,6 +89,7 @@
   </table>
     <div>
       <input type="hidden" value="{{user}}" disabled>
+      <input type="text" class="form-control" placeholder="Section" style="margin-bottom:2%;width:20%;">
       <input type="number" class="form-control" placeholder="Time in minutes" style="margin-bottom:2%;width:20%;">
       {% if blocked == True %}
         <button  class="btn btn-outline-primary btn-lg" onclick="app(this)" disabled>Start Application</button>
@@ -80,6 +100,26 @@
     </div>
 </div>
 </div>
+<script>
+function unhide(element) {
+  var icon = element.children[0];
+  if (icon.style.display != "inline")
+    icon.style.display = 'inline';
+  else
+    icon.style.display = 'none';
+}
+var glob;
+function showform(element) {
+  console.log(element);
+  var form = element.parentNode.children[1].lastElementChild;
+
+  if (form.style.display != '')
+    form.style.display = '';
+  else
+    form.style.display = 'none';
+}
+
+</script>
 <script src="../static/scripts/asyn.js"></script>
 </body>
 </html>
